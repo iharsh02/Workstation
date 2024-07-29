@@ -34,7 +34,7 @@ export const authOptions : AuthOptions = {
           throw new Error ('Invalid Credentials');
         }
         return {
-          id : user.Id.toString(),
+          id : user.id.toString(),
           username : user.username
         }
       },
