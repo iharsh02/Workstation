@@ -1,2 +1,1 @@
-yarn
-yarn dev 
+# Under development :)
