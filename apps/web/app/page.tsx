@@ -1,9 +1,9 @@
-import { Appbar } from "../components/appbar";
+import { Landing } from "../components/Landing";
 
 export default function () {
   return (
     <div>
-      <Appbar />
+      <Landing />
     </div>
   );
 }

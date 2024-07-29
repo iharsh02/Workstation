@@ -14,15 +14,23 @@ datasource db {
 }
 
 model User {
-  Id       Int    @id @default(autoincrement())
-  username String @unique
+  id             Int      @id @default(autoincrement())
+  username       String   @unique
   hashedPassword String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @default(now())
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @default(now())
+  role           Role     @default(USER)
 }
 
 model WorkstationUploads {
-  url  String @unique
-  createdAt DateTime @default(now())
-  updatedAt DateTime @default(now())
+  id         Int      @id @default(autoincrement())
+  url        String   @unique
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @default(now())
+}
+
+enum Role {
+  USER
+  EDITOR
+  ADMIN
 }
