@@ -1,6 +1,6 @@
-import { S3Client, PutObjectCommand, DeleteObjectCommand } from "@aws-sdk/client-s3";
-import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
+import { S3Client, PutObjectCommand } from "@aws-sdk/client-s3";
 import express, { Request, Response } from "express";
+import multer from "multer";
 
 const ACCESSKEY_ID = process.env.ACCESSKEY_ID;
 const SECRETACCESSKEY = process.env.SECRETACCESSKEY;
@@ -19,39 +19,39 @@ const s3client = new S3Client({
   },
 });
 
-async function putObject(filename: any, contentType: any) {
-  const command = new PutObjectCommand({
-    Bucket: BUCKET,
-    Key: `uploads/${filename}`,
-    ContentType: contentType,
-  });
-
-  const url = await getSignedUrl(s3client, command);
-  return url;
-}
-
-async function init() {
-  console.log(
-    "URL for uploading ",
-    await putObject(`uploads-${Date.now()}`, "upload/jpeg")
-  );
-}
-
-//  to delete a file in s3 bucket 
-/*
-async function deleteFile() {
-    const command = new DeleteObjectCommand({
-        Bucket : BUCKET,
-        Key : 'your_key file location could be upload/jpeg'
-    })
-
-    await s3client.send(command);
-    
-}*/
-
-// init();
+const storage = multer.memoryStorage();
+const upload = multer({ storage });
 
 export const workstationUploads = express.Router();
-workstationUploads.post("/", (req: Request, res: Response) => {
-  // POSt route to the workstation uploads
+
+
+interface MulterRequest extends Request {
+  file?: Express.Multer.File;
+}
+
+workstationUploads.post("/", upload.single('file'), async (req: MulterRequest, res: Response) => {
+  try {
+    
+    if (!req.file) {
+      return res.status(400).send("No file uploaded.");
+    }
+
+    const file = req.file;
+    const filename = `${Date.now()}-${file.originalname}`;
+    const contentType = file.mimetype || 'application/octet-stream'; 
+
+    const command = new PutObjectCommand({
+      Bucket: BUCKET,
+      Key: `uploads/${filename}`,
+      Body: file.buffer,
+      ContentType: contentType,
+    });
+
+    await s3client.send(command);
+
+    res.status(200).send("File uploaded successfully.");
+  } catch (error) {
+    console.error("Error uploading file:", error);
+    res.status(500).send("Error uploading file.");
+  }
 });
