@@ -7,6 +7,12 @@ export function Appbar() {
   return (
     <div className="flex justify-between text-white bg-black p-5 space-x-5">
       <div className="text-2xl font cursor-pointer" onClick={()=>router.push("/")}>Workstation</div>
+
+      <div className="flex space-x-5">
+        <button className="" onClick={()=> router.push("/workspace")}>Workspace</button>
+        <button onClick={()=>router.push("/workspace/uploads")}>Uploads</button>
+        <button className="" onClick={()=> router.push("/workspace/chat")}>Chat</button>
+      </div>
       <div className=" space-x-5">
         <button onClick={() => signIn()}>SignIn</button>
         <button onClick={() => signOut()}>SignOut</button>
