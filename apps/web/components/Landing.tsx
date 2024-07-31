@@ -1,4 +1,3 @@
-import { Appbar } from "./appbar";
 import { Hero } from "./Hero";
 
 export function Landing() {

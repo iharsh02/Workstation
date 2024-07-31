@@ -9,7 +9,7 @@ export function UploadToS3() {
   const [uploading, setUploading] = useState(false);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const selectedFile = e.target.files?.[0] ?? null; // Use optional chaining and nullish coalescing
+    const selectedFile = e.target.files?.[0] ?? null; 
     setFile(selectedFile);
   };
 
@@ -27,7 +27,6 @@ export function UploadToS3() {
       const formData = new FormData();
       formData.append("file", file);
 
-      // Replace the URL with your backend endpoint
       const response = await axios.post("http://localhost:3001/api/v1/workstation-uploads", formData, {
         headers: {
           "Content-Type": "multipart/form-data",
@@ -35,7 +34,7 @@ export function UploadToS3() {
       });
 
       console.log("File uploaded successfully:", response.data);
-      router.push("/workspace"); // Navigate to the desired route on success
+      router.push("/workspace"); 
     } catch (error) {
       console.error("Error uploading file:", error);
       alert("Failed to upload file. Please try again.");

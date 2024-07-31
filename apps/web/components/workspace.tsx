@@ -1,20 +1,43 @@
-import { Appbar } from "./appbar";
-import { ReviewFootage } from "./reviewFootage";
+"use client"; 
 
-export function Workspace() {
+import { useEffect, useState } from 'react';
+import axios from 'axios';
+
+interface SignedUrl {
+  key: string;
+  url: string;
+}
+
+export default function Workspace() {
+  const [signedUrls, setSignedUrls] = useState<SignedUrl[]>([]);
+
+  useEffect(() => {
+    async function fetchSignedUrls() {
+      try {
+        const response = await axios.get<{ signedUrls: SignedUrl[] }>('http://localhost:3001/api/v1/workstation');
+        setSignedUrls(response.data.signedUrls);
+      } catch (error) {
+        console.error('Error fetching signed URLs:', error);
+      }
+    }
+
+    fetchSignedUrls();
+  }, []);
+
   return (
-    <div className="min-h-screen text-white bg-gradient-to-r from-slate-900 to-neutral-900">
-      <div className="flex ">
-
-        <div className="flex flex-col w-1/3 m-5">
-          <div className="border h-80">
-            <ReviewFootage />
-          </div>
-          <div className="border h-80">action buttons</div>
-        </div>
-
-        <div className="border m-5 w-full">Chat section</div>
-      </div>
+    <div className="min-h-screen text-white bg-gradient-to-r from-slate-900 to-neutral-900  w-1/2 m-auto text-center">
+      <h1 className="text-2xl font-bold mb-4">Uploads</h1>
+      <ul>
+        {signedUrls.map((item, index) => (
+          <li key={index} className="mb-4">
+            <h2 className="text-lg font-semibold mb-2">{item.key}</h2>
+            <video controls className="">
+              <source src={item.url} type="video/mp4"/>
+              Your browser does not support the video tag.
+            </video>
+          </li>
+        ))}
+      </ul>
     </div>
   );
 }
